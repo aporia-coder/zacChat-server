@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000;
 
 // Server connection
 const server = app.listen(port, () => {
-  console.log("Connected to Server");
+  console.log(`Connected to Server on port ${port}`);
 });
 
 // Connecting to database
