@@ -26,4 +26,14 @@ mongoose.connect(
 const io = socket(server);
 io.on("connection", (socket) => {
   console.log("Made socket connection");
+
+  // Sending message
+  socket.on("chat-message", (msg) => {
+    console.log(msg);
+  });
+
+  // On disconnect
+  socket.on("disconnect", () => {
+    io.emit("message", "A user has left the chat");
+  });
 });
