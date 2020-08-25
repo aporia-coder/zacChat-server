@@ -1,4 +1,5 @@
 const dotenv = require("dotenv").config();
+const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const socket = require("socket.io");
@@ -9,6 +10,10 @@ const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {
   console.log(`Connected to Server on port ${port}`);
 });
+
+// Middleware
+// Put static files here when ready to build
+app.use(cors());
 
 // Connecting to database
 mongoose.connect(
@@ -24,16 +29,10 @@ mongoose.connect(
 
 // Socket setup
 const io = socket(server);
+
 io.on("connection", (socket) => {
   console.log("Made socket connection");
-
-  // Sending message
   socket.on("chat-message", (msg) => {
-    console.log(msg);
-  });
-
-  // On disconnect
-  socket.on("disconnect", () => {
-    io.emit("message", "A user has left the chat");
+    io.sockets.emit("chat-message", msg);
   });
 });
