@@ -16,8 +16,6 @@ app.use(express.static(__dirname + "/public"));
 const io = socket(server);
 
 io.on("connection", (socket) => {
-  console.log("Made socket connection");
-
   socket.on("add-user", (user) => {
     io.sockets.emit("add-user", user);
     console.log(`${user} has connected`);
@@ -29,6 +27,10 @@ io.on("connection", (socket) => {
 
   socket.on("chat-message", (msg) => {
     io.sockets.emit("chat-message", msg);
+  });
+
+  socket.on("disconnect", (user) => {
+    io.sockets.emit("chat-message", user);
   });
 });
 
