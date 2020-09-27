@@ -29,9 +29,10 @@ io.on("connection", (socket) => {
     io.sockets.emit("chat-message", msg);
   });
 
-  socket.on("disconnect", (user) => {
-    io.sockets.emit("chat-message", user);
-  });
+  // socket.on("disconnect", (user) => {
+  //   console.log(`${user} has disconnected`);
+  //   io.sockets.emit("chat-message", user);
+  // });
 });
 
 // todo
