@@ -1,5 +1,7 @@
+const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
+const path = require("path");
 const express = require("express");
 const socket = require("socket.io");
 const app = express();
@@ -10,15 +12,34 @@ const server = app.listen(port, () => {
   console.log(`Connected to Server on port ${port}`);
 });
 
-app.use(express.static(__dirname + "/public"));
+// Database connection
+const connection = mongoose.connect(
+  process.env.URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  },
+  () => {
+    console.log("Connected to Database");
+  },
+);
+
+// Middleware / Routes
+app.use(express.json());
+app.use(express.static(__dirname + "/api/public"));
+app.use("/api/users", require("./routes/users"));
 
 // Socket setup
 const io = socket(server);
 
 io.on("connection", (socket) => {
   socket.on("add-user", (user) => {
-    io.sockets.emit("add-user", user);
-    console.log(`${user} has connected`);
+    socket.broadcast.emit("add-user", user);
+  });
+
+  socket.on("show-users", (users) => {
+    io.sockets.emit("show-users", users);
   });
 
   socket.on("typing", (data) => {
